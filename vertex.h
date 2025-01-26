@@ -1,10 +1,10 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
-typedef struct {
+typedef struct Vertex{
     unsigned int id;
 	unsigned int deg;
-	Vertex *neighbors;
+	struct Vertex *neighbors;
 } Vertex;
 
 typedef struct {

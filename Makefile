@@ -1,8 +1,10 @@
-all: build run clean
+all: build_matrix compile run clean
 
-build:	
-	gcc main.c -o main.o
+build_matrix:
+	python3 create-matrix.py 4 > graph.txt
+compile:	
+	gcc main.c vertex.h vertex.c -o main.o
 run:
-	./main.o
+	./main.o < graph.txt
 clean:
-	rm -f main.o
+	rm -f main.o graph.txt
