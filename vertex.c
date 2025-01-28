@@ -39,9 +39,9 @@ int addNeighbor(Vertex *vert, Vertex *neighbor) {
     Input: VertexList vertList, Int id.
     Output: 1 if in list, else 0.
 */
-int isInList(VertexList vertList, unsigned int id) {
-    for (int i = 0; i < vertList.size; i++) {
-        if (vertList.lst[i]->id == id)
+int isInList(VertexList *vertList, unsigned int id) {
+    for (int i = 0; i < vertList->size; i++) {
+        if (vertList->lst[i]->id == id)
             return 1;
     }
     return 0;
@@ -52,13 +52,13 @@ int isInList(VertexList vertList, unsigned int id) {
     Input: VertexList vertList, Vertex vert.
     Output: 1 succeeded, 0 if already in the list, -1 if was unable to allocate more memory.
 */
-int addVertexToList(VertexList vertList, Vertex *vert) {
+int addVertexToList(VertexList *vertList, Vertex *vert) {
     if (!isInList(vertList, vert->id)) {
-        Vertex **temp = (Vertex **)realloc(vertList.lst, sizeof(Vertex *) * (vertList.size + 1));
+        Vertex **temp = (Vertex **)realloc(vertList->lst, sizeof(Vertex *) * (vertList->size + 1));
         if (temp) {
-            vertList.lst = temp;
-            vertList.lst[vertList.size] = vert;
-            vertList.size++;
+            vertList->lst = temp;
+            vertList->lst[vertList->size] = vert;
+            vertList->size++;
             return 1;
         }
         return -1;

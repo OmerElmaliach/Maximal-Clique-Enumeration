@@ -3,9 +3,10 @@
 #include "vertex.h"
 
 void initiateListFromMatrix(VertexList *vertList, int *matrix, int size);
+VertexList findMaxClique(VertexList P, VertexList R, VertexList X);
 
 int main() {
-    VertexList vertList;
+    VertexList vertList, vertListP, vertListX, maxClique;
     int verticesAmount, totalSize;
     int *matrix;
     printf("Please enter the number of vertices: ");
@@ -19,6 +20,7 @@ int main() {
     }
 
     initiateListFromMatrix(&vertList, matrix, verticesAmount);
+    // maxClique = findMaxClique(vertListP, vertList, vertListX);
 }
 
 void initiateListFromMatrix(VertexList *vertList, int *matrix, int size) {
@@ -35,24 +37,20 @@ void initiateListFromMatrix(VertexList *vertList, int *matrix, int size) {
     for (int i = 0; i < size; i++) {
         for (int j = i + 1; j < size; j++) {
             if (matrix[(i * size) + j]) {
-                if (vertList->lst[i]->deg == 0) {
-                    vertList->lst[i]->neighbors = (Vertex **)malloc(sizeof(Vertex *));
-                    vertList->lst[i]->neighbors[0] = vertList->lst[j];
-                } else {
-                    vertList->lst[i]->neighbors = (Vertex **)realloc(vertList->lst[i]->neighbors, sizeof(Vertex *) * (vertList->lst[i]->deg + 1));
-                    vertList->lst[i]->neighbors[vertList->lst[i]->deg] = vertList->lst[j];
-                }
-                vertList->lst[i]->deg++;
-
-                if (vertList->lst[j]->deg == 0) {
-                    vertList->lst[j]->neighbors = (Vertex **)malloc(sizeof(Vertex *));
-                    vertList->lst[j]->neighbors[0] = vertList->lst[i];
-                } else {
-                    vertList->lst[j]->neighbors = (Vertex **)realloc(vertList->lst[j]->neighbors, sizeof(Vertex *) * (vertList->lst[j]->deg + 1));
-                    vertList->lst[j]->neighbors[vertList->lst[j]->deg] = vertList->lst[i];
-                }
-                vertList->lst[j]->deg++;
+                addNeighbor(vertList->lst[i], vertList->lst[j]);
+                addNeighbor(vertList->lst[j], vertList->lst[i]);
             }
         }
     }
+}
+
+VertexList findMaxClique(VertexList P, VertexList R, VertexList X) {
+    if (!(P.size || X.size))
+        return R;
+    
+    for (int i = 0; i < P.size; i++) {
+
+    }
+
+    return R;
 }

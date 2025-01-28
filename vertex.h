@@ -16,8 +16,8 @@ int isNeighbor(Vertex *vert, unsigned int id);
 
 int addNeighbor(Vertex *vert, Vertex *neighbor);
 
-int isInList(VertexList vertList, unsigned int id);
+int isInList(VertexList *vertList, unsigned int id);
 
-int addVertexToList(VertexList vertList, Vertex *vert);
+int addVertexToList(VertexList *vertList, Vertex *vert);
 
 #endif
