@@ -127,7 +127,7 @@ VertexList cloneList(VertexList *lst1) {
 void printList(VertexList *lst) {
     printf("Size: %d\nVertices: ", lst->size);
     for (int i = 0; i < lst->size - 1; i++) {
-        printf("Id: %d, ", lst->lst[i]->id);
+        printf("%d, ", lst->lst[i]->id);
     }
-    printf("Id: %d\n", lst->lst[lst->size - 1]->id);
+    printf("%d\n", lst->lst[lst->size - 1]->id);
 }

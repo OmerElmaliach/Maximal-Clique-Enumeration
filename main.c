@@ -57,8 +57,8 @@ void findMaxClique(VertexList P, VertexList R, VertexList X, VertexList *maxCliq
         return;
     }
 
-    for (int i = 0; i < P.size; i++) {
-        Vertex *curr = P.lst[i];
+    while (P.size) {
+        Vertex *curr = P.lst[0];
         VertexList newR = cloneList(&R), pNeighbors = { .lst = curr->neighbors, .size = curr->deg };
         addVertexToList(&newR, curr);
 
