@@ -48,6 +48,14 @@ int isInList(VertexList *vertList, unsigned int id) {
 }
 
 /*
+    Frees up the memory of a vertex.
+    Input: Vertex pointer.
+*/
+void freeMemVert(Vertex *vert) {
+    free(vert->neighbors);
+}
+
+/*
     For a given vertex list adds another vertex to it.
     Input: VertexList vertList, Vertex vert.
     Output: 1 succeeded, 0 if already in the list, -1 if failed to allocate more memory.
@@ -130,4 +138,12 @@ void printList(VertexList *lst) {
         printf("%d, ", lst->lst[i]->id);
     }
     printf("%d\n", lst->lst[lst->size - 1]->id);
+}
+
+/*
+    Frees up the memory of a vertex list.
+    Input: Vertex list pointer.
+*/
+void freeMemList(VertexList *lst) {
+    free(lst->lst);
 }

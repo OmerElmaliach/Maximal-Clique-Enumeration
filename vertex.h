@@ -18,6 +18,8 @@ int addNeighbor(Vertex *vert, Vertex *neighbor);
 
 int isInList(VertexList *vertList, unsigned int id);
 
+void freeMemVert(Vertex *vert);
+
 int addVertexToList(VertexList *vertList, Vertex *vert);
 
 int removeVertexFromList(VertexList *vertList, Vertex *vert);
@@ -27,5 +29,7 @@ VertexList findIntersection(VertexList *lst1, VertexList *lst2);
 VertexList cloneList(VertexList *lst1);
 
 void printList(VertexList *lst);
+
+void freeMemList(VertexList *lst);
 
 #endif

@@ -6,7 +6,7 @@ void initiateListFromMatrix(VertexList *vertList, int *matrix, int size);
 void findMaxClique(VertexList P, VertexList R, VertexList X, VertexList *maxClique);
 
 int main() {
-    VertexList vertListP, vertListR, vertListX, maxClique;
+    VertexList vertListP, vertListR, vertListX, maxClique, allVertices;
     int verticesAmount, totalSize;
     int *matrix;
     printf("Please enter the number of vertices: ");
@@ -20,8 +20,15 @@ int main() {
     }
 
     initiateListFromMatrix(&vertListP, matrix, verticesAmount);
+    allVertices = cloneList(&vertListP);
     findMaxClique(vertListP, vertListR, vertListX, &maxClique);
     printList(&maxClique);
+
+    // Free memory used.
+    freeMemList(&maxClique);
+    for (int i = 0; i < verticesAmount; i++) {
+        freeMemVert(allVertices.lst[i]);
+    }
 }
 
 /*
@@ -49,21 +56,33 @@ void initiateListFromMatrix(VertexList *vertList, int *matrix, int size) {
     }
 }
 
-void findMaxClique(VertexList P, VertexList R, VertexList X, VertexList *maxClique) {
-    if (!(P.size || X.size)) {
-        if (maxClique->size < R.size) {
-            *maxClique = cloneList(&R);
+
+/*
+    Finds the maximum clique in a given list of vertices.
+    Input:  Vertex List pointer cliqueNeighbors - Holds neighbors of vertices in R, first iteration contains all vertices.
+            Vertex List pointer potClique - Potential clique.
+            Vertex List pointer procVerts - Holds vertices already in some cliques.
+            Vertex List pointer maxClique - Holds the maximum clique detected, empty at first iteration.
+*/
+void findMaxClique(VertexList cliqueNeighbors, VertexList potClique, VertexList procVerts, VertexList *maxClique) {
+    if (!(cliqueNeighbors.size || procVerts.size)) {
+        if (maxClique->size < potClique.size) {
+            *maxClique = cloneList(&potClique);
         }
         return;
     }
 
-    while (P.size) {
-        Vertex *curr = P.lst[0];
-        VertexList newR = cloneList(&R), pNeighbors = { .lst = curr->neighbors, .size = curr->deg };
+    while (cliqueNeighbors.size) {
+        Vertex *curr = cliqueNeighbors.lst[0];
+        VertexList newR = cloneList(&potClique), pNeighbors = { .lst = curr->neighbors, .size = curr->deg };
         addVertexToList(&newR, curr);
 
-        findMaxClique(findIntersection(&P, &pNeighbors), newR, findIntersection(&X, &pNeighbors), maxClique);
-        removeVertexFromList(&P, curr);
-        addVertexToList(&X, curr);
+        findMaxClique(findIntersection(&cliqueNeighbors, &pNeighbors), newR, findIntersection(&procVerts, &pNeighbors), maxClique);
+        removeVertexFromList(&cliqueNeighbors, curr);
+        addVertexToList(&procVerts, curr);
+
+        freeMemList(&newR);
     }
+
+    freeMemList(&procVerts);
 }

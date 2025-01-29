@@ -1,7 +1,7 @@
 all: build_matrix compile run clean
 
 build_matrix:
-	@python3 create-matrix.py 20 > graph.txt
+	@python3 create-matrix.py 50 > graph.txt
 compile:	
 	@gcc main.c vertex.h vertex.c -o main.o
 run:
