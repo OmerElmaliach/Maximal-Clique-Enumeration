@@ -26,6 +26,7 @@ int main() {
 
     // Free memory used.
     freeMemList(&maxClique);
+    free(matrix);
     for (int i = 0; i < verticesAmount; i++) {
         freeMemVert(allVertices.lst[i]);
     }
@@ -69,11 +70,13 @@ void findMaxClique(VertexList cliqueNeighbors, VertexList potClique, VertexList 
         if (maxClique->size < potClique.size) {
             *maxClique = cloneList(&potClique);
         }
+        freeMemList(&cliqueNeighbors);
+        freeMemList(&procVerts);
         return;
     }
 
     while (cliqueNeighbors.size) {
-        Vertex *curr = cliqueNeighbors.lst[0];
+        Vertex *curr = findHighestDegVert(&cliqueNeighbors);
         VertexList newR = cloneList(&potClique), pNeighbors = { .lst = curr->neighbors, .size = curr->deg };
         addVertexToList(&newR, curr);
 

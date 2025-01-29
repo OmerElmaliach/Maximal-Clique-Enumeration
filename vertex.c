@@ -48,6 +48,23 @@ int isInList(VertexList *vertList, unsigned int id) {
 }
 
 /*
+    Finds and returns the vertex with the highest degree in the list.
+    Input: VertexList vertList.
+    Output: Vertex with the highest degree in list.
+*/
+Vertex * findHighestDegVert(VertexList *vertList) {
+    Vertex *maxVert = NULL;
+    if (vertList->size > 0) {
+        maxVert = vertList->lst[0];
+        for (int i = 1; i < vertList->size; i++) {
+            if (maxVert->deg < vertList->lst[i]->deg)
+                maxVert = vertList->lst[i];
+        }
+    }
+    return maxVert;
+}
+
+/*
     Frees up the memory of a vertex.
     Input: Vertex pointer.
 */
@@ -133,11 +150,13 @@ VertexList cloneList(VertexList *lst1) {
     Input: Vertex list pointer.
 */
 void printList(VertexList *lst) {
-    printf("Size: %d\nVertices: ", lst->size);
-    for (int i = 0; i < lst->size - 1; i++) {
-        printf("%d, ", lst->lst[i]->id);
+    if (lst) {
+        printf("Size: %d\nVertices: ", lst->size);
+        for (int i = 0; i < lst->size - 1; i++) {
+            printf("%d, ", lst->lst[i]->id);
+        }
+        printf("%d\n", lst->lst[lst->size - 1]->id);
     }
-    printf("%d\n", lst->lst[lst->size - 1]->id);
 }
 
 /*
