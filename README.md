@@ -1,7 +1,5 @@
 # Maximum Clique Finder
 
-## Description
-
 This repository contains an implementation of a **Bron-Kerbosch** algorithm, which finds the largest clique in an undirected graph. A **clique** is a subset of vertices such that every two vertices are adjacent.
 
 ## Features
