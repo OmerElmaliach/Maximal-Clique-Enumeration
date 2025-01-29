@@ -3,10 +3,10 @@
 #include "vertex.h"
 
 void initiateListFromMatrix(VertexList *vertList, int *matrix, int size);
-VertexList findMaxClique(VertexList P, VertexList R, VertexList X);
+void findMaxClique(VertexList P, VertexList R, VertexList X, VertexList *maxClique);
 
 int main() {
-    VertexList vertList, vertListP, vertListX, maxClique;
+    VertexList vertListP, vertListR, vertListX, maxClique;
     int verticesAmount, totalSize;
     int *matrix;
     printf("Please enter the number of vertices: ");
@@ -19,10 +19,15 @@ int main() {
         scanf("%d", &matrix[i]);
     }
 
-    initiateListFromMatrix(&vertList, matrix, verticesAmount);
-    // maxClique = findMaxClique(vertListP, vertList, vertListX);
+    initiateListFromMatrix(&vertListP, matrix, verticesAmount);
+    findMaxClique(vertListP, vertListR, vertListX, &maxClique);
+    printList(&maxClique);
 }
 
+/*
+    Converts an edge matrix in form of an array to VertexList type object.
+    Input: VertexList pointer, Array pointer, array size dimensions.
+*/
 void initiateListFromMatrix(VertexList *vertList, int *matrix, int size) {
     vertList->lst = (Vertex **)malloc(sizeof(Vertex *) * size);
     vertList->size = size;
@@ -44,13 +49,21 @@ void initiateListFromMatrix(VertexList *vertList, int *matrix, int size) {
     }
 }
 
-VertexList findMaxClique(VertexList P, VertexList R, VertexList X) {
-    if (!(P.size || X.size))
-        return R;
-    
-    for (int i = 0; i < P.size; i++) {
-
+void findMaxClique(VertexList P, VertexList R, VertexList X, VertexList *maxClique) {
+    if (!(P.size || X.size)) {
+        if (maxClique->size < R.size) {
+            *maxClique = cloneList(&R);
+        }
+        return;
     }
 
-    return R;
+    for (int i = 0; i < P.size; i++) {
+        Vertex *curr = P.lst[i];
+        VertexList newR = cloneList(&R), pNeighbors = { .lst = curr->neighbors, .size = curr->deg };
+        addVertexToList(&newR, curr);
+
+        findMaxClique(findIntersection(&P, &pNeighbors), newR, findIntersection(&X, &pNeighbors), maxClique);
+        removeVertexFromList(&P, curr);
+        addVertexToList(&X, curr);
+    }
 }
