@@ -26,7 +26,7 @@ int addVertexToList(VertexList *vertList, Vertex *vert);
 
 int removeVertexFromList(VertexList *vertList, Vertex *vert);
 
-VertexList findIntersection(VertexList *lst1, VertexList *lst2);
+VertexList findIntersection(VertexList *lst1, VertexList *lst2, VertexList *allVertices);
 
 VertexList cloneList(VertexList *lst1);
 

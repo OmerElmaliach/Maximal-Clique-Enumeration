@@ -147,14 +147,22 @@ int removeVertexFromList(VertexList *vertList, Vertex *vert) {
     Input: Two vertex list pointers.
     Output: New vertex intersection list.
 */
-VertexList findIntersection(VertexList *lst1, VertexList *lst2) {
+VertexList findIntersection(VertexList *lst1, VertexList *lst2, VertexList *allVertices) {
     VertexList newList = { .lst = NULL, .size = 0};
-    if (lst1 && lst1->lst && lst2 && lst2->lst) {
-        for (int i = 0; i < lst1->size; i++) {
-            for (int j = 0; j < lst2->size; j++) {
-                if (lst1->lst[i]->id == lst2->lst[j]->id)
-                    addVertexToList(&newList, lst1->lst[i]);
+    if (lst1 && lst1->lst && lst2 && lst2->lst && allVertices) {
+        int *numArray = (int *)calloc(sizeof(int), allVertices->size);
+        if (numArray) {
+            for (int i = 0; i < lst1->size || i < lst2->size; i++) {
+                if (i < lst1->size)
+                    numArray[lst1->lst[i]->id]++;
+                if (i < lst2->size)
+                    numArray[lst2->lst[i]->id]++;
             }
+            for (int i = 0; i < allVertices->size; i++) {
+                if (numArray[i] == 2)
+                    addVertexToList(&newList, allVertices->lst[i]);
+            }
+            free(numArray);
         }
     }
     return newList;
