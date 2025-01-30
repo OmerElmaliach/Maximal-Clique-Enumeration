@@ -34,6 +34,7 @@ n
 0 1 1 0
 ```
 n - No. of total vertices.
+Do note that for asymmetrical matrices the algorithm will read it as though it was symmetrical.
 
 ## Acknowledgments
 
