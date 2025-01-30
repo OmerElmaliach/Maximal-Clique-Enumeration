@@ -6,7 +6,7 @@ void initiateListFromMatrix(VertexList *vertList, int *matrix, int size);
 void findMaxClique(VertexList P, VertexList R, VertexList X, VertexList *maxClique);
 
 int main() {
-    VertexList vertListP, vertListR, vertListX, maxClique, allVertices;
+    VertexList vertListP = {0}, vertListR = {0}, vertListX = {0}, maxClique = {0}, allVertices = {0};
     int verticesAmount, totalSize;
     int *matrix;
     printf("Please enter the number of vertices: ");
@@ -20,16 +20,17 @@ int main() {
     }
 
     initiateListFromMatrix(&vertListP, matrix, verticesAmount);
-    // allVertices = cloneList(&vertListP);
+    allVertices = cloneList(&vertListP);
     findMaxClique(vertListP, vertListR, vertListX, &maxClique);
     printList(&maxClique);
 
     // Free memory used.
     freeMemList(&maxClique);
     free(matrix);
-    //for (int i = 0; i < verticesAmount; i++) {
-    //    freeMemVert(allVertices.lst[i]);
-    //}
+    for (int i = 0; i < verticesAmount; i++) {
+        freeMemVert(allVertices.lst[i]);
+    }
+    freeMemList(&allVertices);
 }
 
 /*
@@ -69,10 +70,6 @@ void findMaxClique(VertexList cliqueNeighbors, VertexList potClique, VertexList 
         if (maxClique->size < potClique.size) {
             *maxClique = cloneList(&potClique);
         }
-        freeMemList(&cliqueNeighbors);
-        freeMemList(&potClique);
-        freeMemList(&procVerts);
-        return;
     }
 
     while (cliqueNeighbors.size) {

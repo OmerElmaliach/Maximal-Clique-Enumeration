@@ -23,8 +23,12 @@ int isNeighbor(Vertex *vert, unsigned int id) {
     Output: 1 succeeded, 0 if is already a neighbor.
 */
 int addNeighbor(Vertex *vert, Vertex *neighbor) {
+    Vertex **temp;
     if (!isNeighbor(vert, neighbor->id)) {
-        Vertex **temp = (Vertex **)realloc(vert->neighbors, sizeof(Vertex *) * (vert->deg + 1));
+        if (vert->deg > 0) {
+            temp = (Vertex **)realloc(vert->neighbors, sizeof(Vertex *) * (vert->deg + 1));
+        } else
+            temp = (Vertex **)malloc(sizeof(Vertex *));
         if (temp) {
             vert->neighbors = temp;
             vert->neighbors[vert->deg] = neighbor;
@@ -86,8 +90,12 @@ void freeMemVert(Vertex *vert) {
     Output: 1 succeeded, 0 if already in the list.
 */
 int addVertexToList(VertexList *vertList, Vertex *vert) {
+    Vertex **temp;
     if (!isInList(vertList, vert->id)) {
-        Vertex **temp = (Vertex **)realloc(vertList->lst, sizeof(Vertex *) * (vertList->size + 1));
+        if (vertList->size > 0) {
+            temp = (Vertex **)realloc(vertList->lst, sizeof(Vertex *) * (vertList->size + 1));
+        } else
+            temp = (Vertex **)malloc(sizeof(Vertex *));
         if (temp) {
             vertList->lst = temp;
             vertList->lst[vertList->size] = vert;
