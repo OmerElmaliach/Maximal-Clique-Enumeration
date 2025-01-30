@@ -8,9 +8,11 @@
     Output: 1 if is a neighbor, else 0.
 */
 int isNeighbor(Vertex *vert, unsigned int id) {
-    for (int i = 0; i < vert->deg; i++) {
-        if (vert->neighbors[i]->id == id)
-            return 1;
+    if (vert) {
+        for (int i = 0; i < vert->deg; i++) {
+            if (vert->neighbors[i]->id == id)
+                return 1;
+        }
     }
     return 0;
 }
@@ -18,7 +20,7 @@ int isNeighbor(Vertex *vert, unsigned int id) {
 /*
     For a given vertex adds another vertex as neighbor.
     Input: Vertex vert, Vertex neighbor.
-    Output: 1 succeeded, 0 if is already a neighbor, -1 if failed to allocate more memory.
+    Output: 1 succeeded, 0 if is already a neighbor.
 */
 int addNeighbor(Vertex *vert, Vertex *neighbor) {
     if (!isNeighbor(vert, neighbor->id)) {
@@ -29,7 +31,8 @@ int addNeighbor(Vertex *vert, Vertex *neighbor) {
             vert->deg++;
             return 1;
         }
-        return -1;
+        perror("Memory allocation failed, exit...");
+        exit(EXIT_FAILURE);
     }
     return 0;
 }
@@ -40,9 +43,11 @@ int addNeighbor(Vertex *vert, Vertex *neighbor) {
     Output: 1 if in list, else 0.
 */
 int isInList(VertexList *vertList, unsigned int id) {
-    for (int i = 0; i < vertList->size; i++) {
-        if (vertList->lst[i]->id == id)
-            return 1;
+    if (vertList && vertList->lst) {
+        for (int i = 0; i < vertList->size; i++) {
+            if (vertList->lst[i]->id == id)
+                return 1;
+        }
     }
     return 0;
 }
@@ -54,11 +59,13 @@ int isInList(VertexList *vertList, unsigned int id) {
 */
 Vertex * findHighestDegVert(VertexList *vertList) {
     Vertex *maxVert = NULL;
-    if (vertList->size > 0) {
-        maxVert = vertList->lst[0];
-        for (int i = 1; i < vertList->size; i++) {
-            if (maxVert->deg < vertList->lst[i]->deg)
-                maxVert = vertList->lst[i];
+    if (vertList && vertList->lst) {
+        if (vertList->size > 0) {
+            maxVert = vertList->lst[0];
+            for (int i = 1; i < vertList->size; i++) {
+                if (maxVert->deg < vertList->lst[i]->deg)
+                    maxVert = vertList->lst[i];
+            }
         }
     }
     return maxVert;
@@ -70,12 +77,13 @@ Vertex * findHighestDegVert(VertexList *vertList) {
 */
 void freeMemVert(Vertex *vert) {
     free(vert->neighbors);
+    free(vert);
 }
 
 /*
     For a given vertex list adds another vertex to it.
     Input: VertexList vertList, Vertex vert.
-    Output: 1 succeeded, 0 if already in the list, -1 if failed to allocate more memory.
+    Output: 1 succeeded, 0 if already in the list.
 */
 int addVertexToList(VertexList *vertList, Vertex *vert) {
     if (!isInList(vertList, vert->id)) {
@@ -86,7 +94,8 @@ int addVertexToList(VertexList *vertList, Vertex *vert) {
             vertList->size++;
             return 1;
         }
-        return -1;
+        perror("Memory allocation failed, exit...");
+        exit(EXIT_FAILURE);
     }
     return 0;
 }
@@ -94,23 +103,32 @@ int addVertexToList(VertexList *vertList, Vertex *vert) {
 /*
     For a given vertex list removes a vertex from it.
     Input: VertexList vertList, int id.
-    Output: 1 succeeded, 0 if not in the list, -1 if failed to allocate memory.
+    Output: 1 succeeded, 0 if not in the list.
 */
 int removeVertexFromList(VertexList *vertList, Vertex *vert) {
-    for (int i = 0; i < vertList->size; i++) {
-        if (vertList->lst[i]->id == vert->id) {
-            if (i != vertList->size - 1) {
+    if (vertList && vertList->lst) {
+        for (int i = 0; i < vertList->size; i++) {
+            if (vertList->lst[i]->id == vert->id) {
                 for (int j = i; j < vertList->size - 1; j++) {
                     vertList->lst[j] = vertList->lst[j + 1];
                 }
-            }
-            vertList->size--;
-            Vertex **temp = (Vertex **)realloc(vertList->lst, sizeof(Vertex *) * vertList->size);
-            if (temp) {
-                vertList->lst = temp;
+                vertList->size--;
+
+                if (vertList->size == 0) {  
+                    freeMemList(vertList);
+                    vertList->lst = NULL;
+                    return 1;
+                }
+
+                Vertex **temp = (Vertex **)realloc(vertList->lst, sizeof(Vertex *) * vertList->size);
+                if (temp) {
+                    vertList->lst = temp;
+                } else {
+                    perror("Memory allocation failed, exit...");
+                    exit(EXIT_FAILURE);
+                }
                 return 1;
-            } else
-                return -1;
+            }
         }
     }
     return 0;
@@ -123,10 +141,12 @@ int removeVertexFromList(VertexList *vertList, Vertex *vert) {
 */
 VertexList findIntersection(VertexList *lst1, VertexList *lst2) {
     VertexList newList = { .lst = NULL, .size = 0};
-    for (int i = 0; i < lst1->size; i++) {
-        for (int j = 0; j < lst2->size; j++) {
-            if (lst1->lst[i]->id == lst2->lst[j]->id)
-                addVertexToList(&newList, lst1->lst[i]);
+    if (lst1 && lst1->lst && lst2 && lst2->lst) {
+        for (int i = 0; i < lst1->size; i++) {
+            for (int j = 0; j < lst2->size; j++) {
+                if (lst1->lst[i]->id == lst2->lst[j]->id)
+                    addVertexToList(&newList, lst1->lst[i]);
+            }
         }
     }
     return newList;
@@ -138,9 +158,13 @@ VertexList findIntersection(VertexList *lst1, VertexList *lst2) {
     Output: New vertex list.
 */
 VertexList cloneList(VertexList *lst1) {
-    VertexList newList = { .size = lst1->size, .lst = (Vertex **)malloc(sizeof(Vertex *) * lst1->size)};
-    for (int i = 0; i < newList.size; i++) {
-        newList.lst[i] = lst1->lst[i];
+    VertexList newList = { .size = 0, .lst = NULL };
+    if (lst1 && lst1->size > 0) {
+        newList.size = lst1->size;
+        newList.lst = (Vertex **)malloc(sizeof(Vertex *) * lst1->size);
+        for (int i = 0; i < newList.size; i++) {
+            newList.lst[i] = lst1->lst[i];
+        }
     }
     return newList;
 }
@@ -155,7 +179,8 @@ void printList(VertexList *lst) {
         for (int i = 0; i < lst->size - 1; i++) {
             printf("%d, ", lst->lst[i]->id);
         }
-        printf("%d\n", lst->lst[lst->size - 1]->id);
+        if (lst->size > 0)
+            printf("%d\n", lst->lst[lst->size - 1]->id);
     }
 }
 
@@ -164,5 +189,7 @@ void printList(VertexList *lst) {
     Input: Vertex list pointer.
 */
 void freeMemList(VertexList *lst) {
-    free(lst->lst);
+    if (lst && lst->lst) {
+        free(lst->lst);
+    }
 }

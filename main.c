@@ -20,16 +20,16 @@ int main() {
     }
 
     initiateListFromMatrix(&vertListP, matrix, verticesAmount);
-    allVertices = cloneList(&vertListP);
+    // allVertices = cloneList(&vertListP);
     findMaxClique(vertListP, vertListR, vertListX, &maxClique);
     printList(&maxClique);
 
     // Free memory used.
     freeMemList(&maxClique);
     free(matrix);
-    for (int i = 0; i < verticesAmount; i++) {
-        freeMemVert(allVertices.lst[i]);
-    }
+    //for (int i = 0; i < verticesAmount; i++) {
+    //    freeMemVert(allVertices.lst[i]);
+    //}
 }
 
 /*
@@ -57,7 +57,6 @@ void initiateListFromMatrix(VertexList *vertList, int *matrix, int size) {
     }
 }
 
-
 /*
     Finds the maximum clique in a given list of vertices.
     Input:  Vertex List pointer cliqueNeighbors - Holds neighbors of vertices in R, first iteration contains all vertices.
@@ -71,21 +70,22 @@ void findMaxClique(VertexList cliqueNeighbors, VertexList potClique, VertexList 
             *maxClique = cloneList(&potClique);
         }
         freeMemList(&cliqueNeighbors);
+        freeMemList(&potClique);
         freeMemList(&procVerts);
         return;
     }
 
     while (cliqueNeighbors.size) {
         Vertex *curr = findHighestDegVert(&cliqueNeighbors);
-        VertexList newR = cloneList(&potClique), pNeighbors = { .lst = curr->neighbors, .size = curr->deg };
-        addVertexToList(&newR, curr);
+        VertexList clonedPotClique = cloneList(&potClique), pNeighbors = { .lst = curr->neighbors, .size = curr->deg };
+        addVertexToList(&clonedPotClique, curr);
 
-        findMaxClique(findIntersection(&cliqueNeighbors, &pNeighbors), newR, findIntersection(&procVerts, &pNeighbors), maxClique);
+        findMaxClique(findIntersection(&cliqueNeighbors, &pNeighbors), clonedPotClique, findIntersection(&procVerts, &pNeighbors), maxClique);
         removeVertexFromList(&cliqueNeighbors, curr);
         addVertexToList(&procVerts, curr);
-
-        freeMemList(&newR);
     }
 
+    freeMemList(&cliqueNeighbors);
+    freeMemList(&potClique);
     freeMemList(&procVerts);
 }
