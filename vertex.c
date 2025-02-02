@@ -148,7 +148,7 @@ int removeVertexFromList(VertexList *vertList, Vertex *vert) {
     Output: New vertex intersection list.
 */
 VertexList findIntersection(VertexList *lst1, VertexList *lst2, VertexList *allVertices) {
-    VertexList newList = { .lst = NULL, .size = 0};
+    VertexList newList = { .lst = NULL, .size = 0 };
     if (lst1 && lst1->lst && lst2 && lst2->lst && allVertices) {
         int *numArray = (int *)calloc(sizeof(int), allVertices->size);
         if (numArray) {
@@ -162,8 +162,12 @@ VertexList findIntersection(VertexList *lst1, VertexList *lst2, VertexList *allV
                 if (numArray[i] == 2)
                     addVertexToList(&newList, allVertices->lst[i]);
             }
-            free(numArray);
+        } else {
+            perror("Memory allocation failed, exit...");
+            exit(EXIT_FAILURE);
         }
+
+        free(numArray);
     }
     return newList;
 }
